@@ -1,5 +1,7 @@
 """PyCalc is a simple calculator built with Python and PyQt."""
 
+import pytest
+from PyQt6.QtTest import QTest
 import sys
 from functools import partial
 
@@ -134,6 +136,72 @@ def main():
     pycalcWindow.show()
     PyCalc(model=evaluateExpression, view=pycalcWindow)
     sys.exit(pycalcApp.exec())
+
+
+
+
+app = QApplication([])
+
+
+def test_addition():
+    window = PyCalcWindow()
+    window.show()
+    QTest.keyClicks(window.display, "2+2")
+    QTest.keyClick(window.buttonMap["="], Qt.Key.Key_Return)
+    assert window.displayText() == "4"
+
+
+def test_subtraction():
+    window = PyCalcWindow()
+    window.show()
+    QTest.keyClicks(window.display, "5-3")
+    QTest.keyClick(window.buttonMap["="], Qt.Key.Key_Return)
+    assert window.displayText() == "2"
+
+
+def test_multiplication():
+    window = PyCalcWindow()
+    window.show()
+    QTest.keyClicks(window.display, "4*3")
+    QTest.keyClick(window.buttonMap["="], Qt.Key.Key_Return)
+    assert window.displayText() == "12"
+
+
+def test_division():
+    window = PyCalcWindow()
+    window.show()
+    QTest.keyClicks(window.display, "10/2")
+    QTest.keyClick(window.buttonMap["="], Qt.Key.Key_Return)
+    assert window.displayText() == "5.0"
+
+
+def test_integer_division():
+    window = PyCalcWindow()
+    window.show()
+    QTest.keyClicks(window.display, "10//3")
+    QTest.keyClick(window.buttonMap["="], Qt.Key.Key_Return)
+    assert window.displayText() == "3"
+
+
+def test_remainder_of_integer_division():
+    window = PyCalcWindow()
+    window.show()
+    QTest.keyClicks(window.display, "10%3")
+    QTest.keyClick(window.buttonMap["="], Qt.Key.Key_Return)
+    assert window.displayText() == "1"
+
+
+def test_division_by_zero():
+    window = PyCalcWindow()
+    window.show()
+    QTest.keyClicks(window.display, "1/0")
+    QTest.keyClick(window.buttonMap["="], Qt.Key.Key_Return)
+    assert window.displayText() == "ERROR"
+
+
+def test_expression_evaluation():
+    assert evaluateExpression("1+2*3-4/2") == "5.0"
+
 
 
 if __name__ == "__main__":
